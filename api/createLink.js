@@ -17,7 +17,7 @@ function genKey() {
     .toString('base64')
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
-    .replace(/\=/g, '');
+    .replace(/=/g, '');
   console.log(key);
   return key;
 }
