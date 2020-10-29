@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "joi": "^17.3.0",
+    "lodash": "^4.17.20",
     "vue": "^3.0.0"
   },
   "devDependencies": {
@@ -21,7 +23,7 @@
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^7.0.0-0",
-    "tailwindcss": "^1.9.6",
+    "tailwindcss": "^0.6.6",
     "vue-cli-plugin-tailwindcss": "~0.1.1"
   }
 }

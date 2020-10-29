@@ -3,7 +3,9 @@
     class="min-h-screen
     bg-grey-light
       font-sans
-      justify-center"
+      flex
+      justify-center
+      items-center"
   >
     <div class="bg-grey-lightest px-4 py-6 rounded container text-center">
       <h1 class="mb-4">URL Shortener</h1>
@@ -23,7 +25,7 @@
             currTab ? 'bg-grey-light' : 'bg-grey-lighter',
           ]"
         >
-          Create
+          Creating
         </button>
         <button
           @click="toggleCurrTab"
@@ -39,7 +41,7 @@
             currTab ? 'bg-grey-lighter' : 'bg-grey-light',
           ]"
         >
-          Find
+          Finding
         </button>
       </div>
       <hr class="border mb-4 mt-0" />
