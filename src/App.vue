@@ -54,10 +54,11 @@
 </template>
 
 <script>
+import { openDB } from 'idb';
 import CreateLink from '@/components/CreateLink.vue';
 import FindLink from '@/components/FindLink.vue';
 
-import { ref } from 'vue';
+import { provide, ref } from 'vue';
 
 export default {
   name: 'App',
@@ -68,10 +69,25 @@ export default {
   setup() {
     // True = Creating, False for finding
     const currTab = ref(true);
+    const db = ref({});
+
+    provide('db', db);
 
     const toggleCurrTab = () => {
       currTab.value = !currTab.value;
     };
+
+    async function createDB() {
+      db.value = await openDB('Links', 1, {
+        upgrade(database) {
+          if (database.objectStoreNames.contains('links')) return;
+          console.log('I am creating new DB');
+          database.createObjectStore('links', { keyPath: 'name' });
+        },
+      });
+    }
+
+    createDB();
 
     return {
       // Data
