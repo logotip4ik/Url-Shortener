@@ -5,6 +5,8 @@
         v-model="slug"
         placeholder="Slug..."
         maxlength="32"
+        ref="inputSLUG"
+        @keypress.enter="$refs.inputURL.focus()"
         class="px-3 py-2 w-full mb-1
             border rounded hover:border-grey
             focus:border-grey focus:shadow"
@@ -22,7 +24,10 @@
       </button>
       <input
         v-model="url"
+        ref="inputURL"
         placeholder="example.com"
+        @keypress.enter="createLink"
+        @keypress.up="$refs.inputSLUG.focus()"
         class="px-3 py-2 w-full
             rounded-r hover:border-grey
             focus:border-grey focus:shadow"
@@ -39,28 +44,29 @@
 </template>
 
 <script>
-import { kebabCase } from 'lodash';
-import { ref, computed, watch } from 'vue';
+import { camelCase } from 'lodash';
+// eslint-disable-next-line
+import { ref, computed, watch, inject } from 'vue';
 
 export default {
   name: 'CreateLink',
   setup() {
-    const loading = ref(false);
-    const error = ref(false);
     // True for https://, False http://
     const dungle = ref(true);
+    const loading = ref(false);
+    const error = ref(false);
     const rawSlug = ref('');
     const url = ref('');
+
+    const db = inject('db');
 
     const slug = computed({
       get: () => rawSlug.value,
       set: (val) => {
-        rawSlug.value = kebabCase(val);
+        rawSlug.value = camelCase(val);
       },
     });
     const lenSlug = computed(() => rawSlug.value.length);
-
-    watch(rawSlug, (val) => console.log(val));
 
     const toggleDangling = () => {
       dungle.value = !dungle.value;
@@ -72,16 +78,17 @@ export default {
         return;
       }
       error.value = false;
-      const res = await (
-        await fetch('/api/createLink', {
-          method: 'POST',
-          body: JSON.stringify({
-            name: slug.value.trim(),
-            url: dungle.value ? `https://${url.value}` : `http://${url.value}`,
-          }),
-        })
-      ).json();
-      console.log(res);
+      const res = await fetch('/api/createLink', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: slug.value.trim(),
+          url: dungle.value ? `https://${url.value}` : `http://${url.value}`,
+        }),
+      });
+      if (res.ok) {
+        const link = await res.json();
+        await db.value.put('links', link.link);
+      }
     }
 
     return {

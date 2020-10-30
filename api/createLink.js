@@ -26,8 +26,9 @@ module.exports = async (req, res) => {
   try {
     const obj = await schema.validateAsync(JSON.parse(req.body));
     if (!obj.name) obj.name = genKey();
-    res.send({ message: 'Create Link', link: obj });
+    res.send({ message: 'Created Link', link: obj });
   } catch (error) {
+    res.status(400).send({ message: 'Error', error: error.message });
     console.log(error.message);
   }
 };

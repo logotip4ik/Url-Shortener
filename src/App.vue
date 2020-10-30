@@ -81,7 +81,7 @@ export default {
       db.value = await openDB('Links', 1, {
         upgrade(database) {
           if (database.objectStoreNames.contains('links')) return;
-          console.log('I am creating new DB');
+          console.info('I am creating new DB or new version');
           database.createObjectStore('links', { keyPath: 'name' });
         },
       });

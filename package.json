@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "dotenv": "^8.2.0",
+    "faunadb": "^3.0.1",
     "idb": "^5.0.7",
     "joi": "^17.3.0",
     "lodash": "^4.17.20",
