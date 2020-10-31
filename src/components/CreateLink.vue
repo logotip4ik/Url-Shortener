@@ -7,11 +7,14 @@
         maxlength="32"
         ref="inputSLUG"
         @keypress.enter="$refs.inputURL.focus()"
-        class="px-3 py-2 w-full mb-1
+        class="px-3 py-2 w-full
             border rounded hover:border-grey
             focus:border-grey focus:shadow"
       />
-      <small class="text-right mb-2">{{ lenSlug }}/32</small>
+      <div class="w-full flex px-1">
+        <small class="text-red-dark mr-auto" v-if="!success.ok">{{ success.message || ' ' }}</small>
+        <small class="text-right mb-4 ml-auto">{{ lenSlug }}/32</small>
+      </div>
     </div>
     <div class="w-full flex border rounded">
       <button
@@ -26,7 +29,7 @@
         v-model="url"
         ref="inputURL"
         placeholder="example.com"
-        @keypress.enter="createLink"
+        @keypress.enter="$refs.createButton.click()"
         @keypress.up="$refs.inputSLUG.focus()"
         class="px-3 py-2 w-full
             rounded-r hover:border-grey
@@ -36,8 +39,11 @@
     <small class="text-red-dark text-left mt-1" v-if="error">You must fill in this field</small>
   </div>
   <button
+    ref="createButton"
     @click="createLink"
-    class="rounded px-5 py-3 border bg-grey-lighter focus:outline-none hover:bg-grey-light"
+    class="rounded px-5 py-3 border
+      bg-grey-lighter focus:outline-none
+      hover:bg-grey-light active:scale-50"
   >
     Create
   </button>
@@ -46,7 +52,7 @@
 <script>
 import { camelCase } from 'lodash';
 // eslint-disable-next-line
-import { ref, computed, watch, inject } from 'vue';
+import { ref, computed, watch, inject, reactive } from 'vue';
 
 export default {
   name: 'CreateLink',
@@ -55,6 +61,7 @@ export default {
     const dungle = ref(true);
     const loading = ref(false);
     const error = ref(false);
+    const success = reactive({ ok: null, message: null });
     const rawSlug = ref('');
     const url = ref('');
 
@@ -82,12 +89,22 @@ export default {
         method: 'POST',
         body: JSON.stringify({
           name: slug.value.trim(),
-          url: dungle.value ? `https://${url.value}` : `http://${url.value}`,
+          url: dungle.value ? `https://${url.value.trim()}` : `http://${url.value.trim()}`,
         }),
       });
+      const link = await res.json();
       if (res.ok) {
-        const link = await res.json();
         await db.value.put('links', link.link);
+        url.value = '';
+        slug.value = '';
+        success.ok = true;
+        success.message = null;
+        setTimeout(() => {
+          success.ok = null;
+        }, 2000);
+      } else if (link.error.match(/Instance is not unique./)) {
+        success.ok = false;
+        success.message = 'This name is already in use';
       }
     }
 
@@ -97,6 +114,7 @@ export default {
       error,
       dungle,
       loading,
+      success,
       // Computed
       slug,
       lenSlug,

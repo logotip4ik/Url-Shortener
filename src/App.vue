@@ -82,7 +82,7 @@ export default {
         upgrade(database) {
           if (database.objectStoreNames.contains('links')) return;
           console.info('I am creating new DB or new version');
-          database.createObjectStore('links', { keyPath: 'name' });
+          database.createObjectStore('links', { keyPath: '_id' });
         },
       });
     }

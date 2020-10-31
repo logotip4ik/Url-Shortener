@@ -2,7 +2,7 @@
   <h1>Find Link By Its Slug</h1>
   <div v-if="links.length > 0">
     <h2 class="mb-4">Your Links:</h2>
-    <div v-for="link in links" :key="link.name">
+    <div v-for="link in links" :key="link._id">
       <pre>{{ link }}</pre>
     </div>
   </div>
