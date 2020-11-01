@@ -54,10 +54,11 @@ module.exports = async (req, res) => {
     if (!obj.name) obj.name = genKey();
     const link = await createLink(obj);
     if (!link.ok) {
-      res.status(400).send({ message: 'Error', error: link.data });
+      console.log(link.data);
+      res.send({ message: 'Error', error: link.data });
       return;
     }
-    res.send({ message: 'Created Link', link: link.data });
+    res.status(201).send({ message: 'Created Link', link: link.data });
   } catch (error) {
     res.status(400).send({ message: 'Error', error: error.message });
     console.log(error.message);

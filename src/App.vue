@@ -7,7 +7,7 @@
       justify-center
       items-center"
   >
-    <div class="bg-grey-lightest px-4 py-6 rounded container text-center">
+    <div class="bg-grey-lightest px-4 py-6 rounded container text-center relative">
       <h1 class="mb-4">URL Shortener</h1>
       <div>
         <button

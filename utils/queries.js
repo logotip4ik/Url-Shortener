@@ -7,4 +7,13 @@ module.exports = {
       url,
     }
   }`,
+  findLinkByNameQuery: `
+    query($name: String!) {
+      findLinkByName( name: $name ) {
+        name,
+        _id,
+        url,
+      }
+    }
+  `,
 };
