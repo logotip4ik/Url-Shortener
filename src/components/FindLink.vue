@@ -31,6 +31,7 @@
       </div>
     </div>
   </div>
+  <VOverlay show="loading"></VOverlay>
   <!-- <div v-if="links.length > 0">
     <h2 class="mb-4">Your Links:</h2>
     <div v-for="link in links" :key="link._id">
@@ -40,6 +41,8 @@
 </template>
 
 <script>
+import VOverlay from '@/components/V-Overlay.vue';
+
 import { inject, ref, computed } from 'vue';
 import { camelCase } from 'lodash';
 
@@ -47,8 +50,9 @@ export default {
   name: 'FindLink',
   setup() {
     const db = inject('db');
-    const links = ref([]);
     const error = ref(false);
+    const loading = ref(false);
+    const links = ref([]);
     const link = ref({});
     const rawName = ref('');
 
@@ -65,6 +69,7 @@ export default {
         return;
       }
       error.value = false;
+      loading.value = true;
       const res = await fetch('/api/findLinkByName', {
         method: 'POST',
         body: JSON.stringify({
@@ -73,7 +78,7 @@ export default {
       });
       const foundedLink = await res.json();
       link.value = foundedLink.link;
-      console.log(foundedLink);
+      loading.value = false;
     }
 
     async function getAllLinks() {
@@ -86,11 +91,15 @@ export default {
       link,
       links,
       error,
+      loading,
       // Computed
       name,
       // Functions
       findLink,
     };
+  },
+  components: {
+    VOverlay,
   },
 };
 </script>

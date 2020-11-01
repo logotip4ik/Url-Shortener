@@ -47,22 +47,15 @@
   >
     Create
   </button>
-  <transition name="fade" mode="in-out">
-    <div v-show="loading" class="overlay">
-      <div class="overlay__inner">
-        <div class="overlay__inner--circle"></div>
-        <div class="overlay__inner--circle"></div>
-        <div class="overlay__inner--circle"></div>
-      </div>
-    </div>
-  </transition>
+  <VOverlay :show="loading"></VOverlay>
 </template>
 
 <script>
+import VOverlay from '@/components/V-Overlay.vue';
+
 import { camelCase } from 'lodash';
-import gsap from 'gsap';
 // eslint-disable-next-line
-import { ref, computed, watch, inject, reactive, onMounted } from 'vue';
+import { ref, computed, watch, inject, reactive } from 'vue';
 
 export default {
   name: 'CreateLink',
@@ -88,20 +81,6 @@ export default {
     const toggleDangling = () => {
       dungle.value = !dungle.value;
     };
-
-    function loadingAnim() {
-      gsap.to('.overlay__inner--circle', {
-        stagger: {
-          each: 0.2,
-          yoyo: true,
-          repeat: -1,
-        },
-        duration: 0.4,
-        y: -25,
-      });
-    }
-
-    onMounted(() => loadingAnim());
 
     async function createLink() {
       if (!url.value) {
@@ -155,46 +134,8 @@ export default {
       toggleDangling,
     };
   },
+  components: {
+    VOverlay,
+  },
 };
 </script>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 200ms ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  background: #eee;
-  transition: all 200ms ease-in-out;
-}
-
-.overlay__inner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  gap: 2rem;
-  justify-content: space-evenly;
-}
-
-.overlay__inner--circle {
-  display: inline-block;
-  width: 2rem;
-  height: 2rem;
-  background: #18181e;
-  opacity: 0.9;
-  border-radius: 50%;
-}
-</style>
