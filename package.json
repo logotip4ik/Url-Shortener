@@ -16,11 +16,13 @@
     "idb": "^5.0.7",
     "joi": "^17.3.0",
     "lodash": "^4.17.20",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "^4.5.8",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-airbnb": "^5.0.2",

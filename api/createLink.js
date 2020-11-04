@@ -6,6 +6,20 @@ const Joi = require('joi');
 
 const { createLinkQuery } = require('../utils/queries');
 
+const server = process.env.NODE_ENV !== 'development';
+
+function checkValidURL(value) {
+  console.log(value.match(/^http?:\/\/localhost*/));
+  if (!server) {
+    if (value.match(/^http?:\/\/localhost]*/)) throw new Error('not valid url');
+  } else if (server) {
+    if (value.match(/^http?:\/\/url-shortener\.vercel\.app]*/)) throw new Error('not valid url');
+  }
+  if (value.match(/createLink/g)) throw new Error('not valid url');
+  if (value.match(/findLinkByName/g)) throw new Error('not valid url');
+  return value;
+}
+
 const schema = Joi.object({
   name: Joi.string()
     .allow(null, '')
@@ -13,6 +27,7 @@ const schema = Joi.object({
     .max(32),
   url: Joi.string()
     .uri()
+    .custom(checkValidURL)
     .required(),
 });
 
@@ -23,7 +38,6 @@ function genKey() {
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=/g, '');
-  console.log(key);
   return key;
 }
 
