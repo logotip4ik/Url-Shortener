@@ -3,12 +3,15 @@
     <div class="flex flex-wrap w-full items-center justify-around">
       <div class="flex flex-col">
         <h2 class="mb-2 text-left">Name to found:</h2>
-        <input
-          v-model="name"
-          placeholder="example..."
-          class="border rounded px-3 py-2 w-full"
-          @keypress.enter="findLink"
-        />
+        <div class="w-full">
+          <input
+            v-model="name"
+            placeholder="example..."
+            class="border rounded px-3 py-2 w-full mb-1"
+            @keypress.enter="findLink"
+          />
+          <small class="text-red-dark text-left mr-auto block" v-if="message">{{ message }}</small>
+        </div>
         <button
           class="rounded border w-16 px-4 py-2 mt-2
       bg-grey-lighter focus:outline-none
@@ -59,8 +62,7 @@
 </template>
 
 <script>
-// eslint-disable-next-line
-import { inject, ref, computed, watch } from 'vue';
+import { inject, ref, computed } from 'vue';
 import { camelCase } from 'lodash';
 
 export default {
@@ -74,6 +76,7 @@ export default {
     const error = ref(false);
     const link = ref({});
     const rawName = ref('');
+    const message = ref('');
 
     const name = computed({
       get: () => rawName.value,
@@ -96,11 +99,16 @@ export default {
         }),
       });
       const foundedLink = await res.json();
-      if (foundedLink.link) {
-        addLink(foundedLink.link);
+      if (!foundedLink.link.name) {
+        message.value = 'Link with this name is not Found!';
+        toggleLoading(false);
+        return;
       }
+      addLink(foundedLink.link);
       link.value = foundedLink.link;
       toggleLoading(false);
+      name.value = '';
+      message.value = '';
     }
 
     async function getAllLinks() {
@@ -108,19 +116,12 @@ export default {
     }
     getAllLinks();
 
-    watch(
-      links,
-      (val) => {
-        console.log(val);
-      },
-      { deep: true },
-    );
-
     return {
       // Data
       link,
       links,
       error,
+      message,
       // Computed
       name,
       // Functions
